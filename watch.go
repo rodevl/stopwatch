@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-// Function prototype for timers.
+//TimerFunc Function prototype for timers.
 type TimerFunc func(Watch)
 
 type Watch interface {
@@ -15,35 +15,41 @@ type Watch interface {
 	// deferring out of a function.
 	Timer(fn TimerFunc)
 
-	// Stops the watch based on the current wall-clock time.
+	//Stop  stops the watch based on the current wall-clock time.
 	Stop() Watch
 
-	// Starts the watch based on the current wall-clock time.
+	//Start starts the watch based on the current wall-clock time.
 	Start() Watch
 
+	//Duration returns the elapsed duration
+	Duration() time.Duration
+
+	//CurrentDuration returns the current duration
+	CurrentDuration() time.Duration
+
 	// Milliseconds returns the elapsed duration in milliseconds.
-	Milliseconds() time.Duration
+	Milliseconds() int
 
 	// Seconds returns the elapsed duration in seconds.
-	Seconds() time.Duration
+	Seconds() int
 
 	// Minutes returns the elapsed duration in minutes.
-	Minutes() time.Duration
+	Minutes() int
 
 	// Hours returns the elapsed duration in hours.
-	Hours() time.Duration
+	Hours() int
 
 	// Days returns the elapsed duration in days.
-	Days() time.Duration
+	Days() int
 
 	// CurrentDurationSecond returns the current duration in seconds
-	CurrentDurationSecond() time.Duration
+	CurrentDurationSecond() int
 
 	// CurrentDurationMillisecond returns the current duration in milliseconds
-	CurrentDurationMillisecond() time.Duration
+	CurrentDurationMillisecond() int
 }
 
-var now = func() time.Time {
+var Now = func() time.Time {
 	return time.Now()
 }
 
@@ -57,15 +63,15 @@ func (s *watch) Timer(fn TimerFunc) {
 	fn(s.Stop())
 }
 
-// Stops the watch based on the current wall-clock time.
+//Stop  stops the watch based on the current wall-clock time.
 func (s *watch) Stop() Watch {
-	s.stop = now()
+	s.stop = Now()
 	return s
 }
 
-// Starts the watch based on the current wall-clock time.
+//Start starts the watch based on the current wall-clock time.
 func (s *watch) Start() Watch {
-	s.start = now()
+	s.start = Now()
 	return s
 }
 
@@ -79,41 +85,54 @@ func (s *watch) String() string {
 	return s.duration().String()
 }
 
+//duration returns the elapsed duration
 func (s *watch) duration() time.Duration {
 	return s.stop.Sub(s.start)
 }
 
+//CurrentDuration returns the current duration
+func (s *watch) CurrentDuration() time.Duration {
+	timeNow := time.Now()
+	duration := timeNow.Sub(s.start)
+	return duration
+}
+
+// Duration returns the elapsed duration.
+func (s *watch) Duration() time.Duration {
+	return s.duration()
+}
+
 // Milliseconds returns the elapsed duration in milliseconds.
-func (s *watch) Milliseconds() time.Duration {
-	return s.duration() / time.Millisecond
+func (s *watch) Milliseconds() int {
+	return int(s.duration().Milliseconds())
 }
 
 // Seconds returns the elapsed duration in seconds.
-func (s *watch) Seconds() time.Duration {
-	return s.duration() / time.Second
+func (s *watch) Seconds() int {
+	return int(s.duration().Seconds())
 }
 
 // Minutes returns the elapsed duration in minutes.
-func (s *watch) Minutes() time.Duration {
-	return s.duration() / time.Minute
+func (s *watch) Minutes() int {
+	return int(s.duration().Minutes())
 }
 
 // Hours returns the elapsed duration in hours.
-func (s *watch) Hours() time.Duration {
-	return s.duration() / time.Hour
+func (s *watch) Hours() int {
+	return int(s.duration().Hours())
 }
 
 // Days returns the elapsed duration in days.
-func (s *watch) Days() time.Duration {
-	return s.duration() / (24 * time.Hour)
+func (s *watch) Days() int {
+	return int(s.duration().Hours()) / 24
 }
 
 // CurrentDurationSecond returns the current duration in seconds
-func (s *watch) CurrentDurationSecond() time.Duration {
-	return time.Now().Sub(s.start) / time.Second
+func (s *watch) CurrentDurationSecond() int {
+	return int(s.CurrentDuration() / time.Second)
 }
 
 // CurrentDurationMillisecond returns the current duration in milliseconds
-func (s *watch) CurrentDurationMillisecond() time.Duration {
-	return time.Now().Sub(s.start) / time.Millisecond
+func (s *watch) CurrentDurationMillisecond() int {
+	return int(s.CurrentDuration() / time.Millisecond)
 }
