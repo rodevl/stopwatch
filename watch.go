@@ -35,6 +35,12 @@ type Watch interface {
 
 	// Days returns the elapsed duration in days.
 	Days() time.Duration
+
+	// CurrentDurationSecond returns the current duration in seconds
+	CurrentDurationSecond() time.Duration
+
+	// CurrentDurationMillisecond returns the current duration in milliseconds
+	CurrentDurationMillisecond() time.Duration
 }
 
 var now = func() time.Time {
