@@ -102,10 +102,12 @@ func (s *watch) Days() time.Duration {
 	return s.duration() / (24 * time.Hour)
 }
 
+// CurrentDurationSecond returns the current duration in seconds
 func (s *watch) CurrentDurationSecond() time.Duration {
 	return time.Now().Sub(s.start) / time.Second
 }
 
+// CurrentDurationMillisecond returns the current duration in milliseconds
 func (s *watch) CurrentDurationMillisecond() time.Duration {
 	return time.Now().Sub(s.start) / time.Millisecond
 }
